@@ -7,7 +7,6 @@ import {
     unAuthorizeAsync
 } from './services/authService';
 import Profile from './components/Profile';
-import { getActivitiesAsync } from './services/activitiesService';
 import Activities from './components/Activities';
 
 
@@ -45,7 +44,7 @@ function App() {
 
   return (
     <div className="App">
-          {token && <header>
+          {token && <header className="header">
               <Profile />
               <button onClick={() => unAuthorizeAsync().then(() => window.location.reload())}>Выйти</button>
           </header>}

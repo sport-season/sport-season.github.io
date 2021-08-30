@@ -6,7 +6,7 @@ const lsUserKey = 'SportSeasonStravaUserData';
 export function getAuthLink() {
     const data = {
         client_id,
-        redirect_uri: 'http://localhost:3000/',
+        redirect_uri: window.location.origin,
         response_type: 'code',
         approval_prompt : 'auto',
         scope: 'activity:read',

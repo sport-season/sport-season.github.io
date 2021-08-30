@@ -53,7 +53,7 @@ const Activities = ({ token }) => {
             if (summary_polyline?.length) {
                 const coords = polyline.decode(summary_polyline);
                 L.polyline(coords).setStyle({
-                    color: 'rgba(255, 255, 255,0.5)'
+                    color: 'rgba(255, 0, 0,0.5)'
                 }).addTo(mapRef.current)
                 boundCoordinates.push(coords)
             }

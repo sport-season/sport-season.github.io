@@ -1,8 +1,7 @@
 {
-  "name": "sport-season.github.io",
+  "name": "stravastat.github.io",
   "version": "0.1.0",
   "private": true,
-  "homepage": "./",
   "dependencies": {
     "@mapbox/polyline": "^1.1.1",
     "@testing-library/jest-dom": "^5.11.4",
@@ -15,7 +14,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && xcopy build . /E/Y",
+    "build": "react-scripts build && ren build docs",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
