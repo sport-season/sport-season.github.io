@@ -3,3 +3,36 @@
     line-height: 24px;
     box-sizing: border-box;
 }
+
+
+.floatButton {
+    color:white;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 48px;
+    z-index: 3333333333;
+    border: none;
+    line-height: 24px;
+    padding: 12px;
+    background-color: #e91e63;
+    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+
+
+}
+
+.floatButton:disabled {
+     background-color: grey;
+    animation: rotation 2s infinite linear;
+ }
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
+}

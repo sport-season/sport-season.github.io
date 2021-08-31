@@ -4,10 +4,12 @@ import {
     getAuthLink,
     getAuthTokenAsync,
     setAuthTokenByCodeAsync,
-    unAuthorizeAsync
+    unAuthorizeAsync,
+    getUser
 } from './services/authService';
 import Profile from './components/Profile';
 import Activities from './components/Activities';
+import { UserContext } from './contexts/userContext';
 
 
 function App() {
@@ -44,12 +46,14 @@ function App() {
 
   return (
     <div className="App">
-          {token && <header className="header">
-              <Profile />
-              <button onClick={() => unAuthorizeAsync().then(() => window.location.reload())}>Выйти</button>
-          </header>}
-          {!token && <button onClick={() => window.location.href = getAuthLink()}>Войти</button>}
-        {token && <Activities token={token} /> }
+        {token && <UserContext.Provider value={getUser()}>
+            <header className="header">
+                <Profile />
+                <button onClick={() => unAuthorizeAsync().then(() => window.location.reload())}>Выйти</button>
+            </header>
+            <Activities token={token} />
+        </UserContext.Provider>}
+        {!token && <button onClick={() => window.location.href = getAuthLink()}>Войти</button>}
     </div>
   );
 }
