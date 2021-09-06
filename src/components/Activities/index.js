@@ -10,6 +10,7 @@ import { clearMap } from '../../helpers/mapHelper';
 import Card from './components/Card';
 import styles from './styles.module.css'
 import { UserContext } from '../../contexts/userContext';
+import Chart from "../Chart";
 const now = new Date();
 const defaultD1 = new Date(now.getFullYear(), 0, 1, 4, 0, 0, 1);
 const defaultD2 = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
@@ -27,8 +28,10 @@ const Activities = ({ token }) => {
 
     useEffect(() => {
         localDB.getAllActivity().then(res => {
-            console.log(res);
             setActivities(res);
+            if (!res.length) {
+                handleUpdate();
+            }
         });
     }, []);
 
@@ -107,7 +110,7 @@ const Activities = ({ token }) => {
     let handleChangeD2 = (e) => setD2(e.target.value);
     const limit = 50;
 
-    const handleUpdate = async () => {
+    async function handleUpdate() {
         setIsLoading(true);
         let lastBatch = activities;
         let lastActivityDate = lastBatch?.length
@@ -176,6 +179,7 @@ const Activities = ({ token }) => {
             <Card title={'В движении'}>{(aggreg.moving_time / 60 / 60).toFixed(2)} ч</Card>
         </section>
         }
+        {filtredActivities?.length > 0 && <Chart activities={filtredActivities} />}
         {!activities && 'loading...'}
         {filtredActivities && <div ref={mapContainerRef} style={{height:'300px'}}/>}
         <ul>

@@ -1,5 +1,35 @@
+body {
+    margin: 0;
+    padding: 0;
+}
 .header {
     display: flex;
     justify-content: space-between;
 }
 
+button {
+    padding: 6px 10px;
+    border-radius:4px;
+    background-color: #fc5200;
+    border: 1px solid #fc5200;
+    color: #fff;
+}
+
+button:hover {
+    background-color: #c94100;
+    border-color: #bf3e00;
+}
+
+.hello {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.bigButton {
+    font-size: 1.2em;
+    padding: 16px 32px;
+    margin-top: 20px;
+    font-weight: 700;
+}

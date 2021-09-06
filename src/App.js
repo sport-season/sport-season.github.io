@@ -14,6 +14,7 @@ import { UserContext } from './contexts/userContext';
 
 function App() {
     const [token, setToken] = useState(null);
+    const [err, setErr] = useState(null);
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
@@ -22,8 +23,9 @@ function App() {
             const getUserData = async () => {
                 try {
                     await setAuthTokenByCodeAsync(code);
-                    window.location.href = window.location.href.replace(window.location.search, '');
+                    //window.location.href = window.location.href.replace(window.location.search, '');
                 } catch (e) {
+                    setErr(e.message)
                     window.location.href = getAuthLink();
                 }
             }
@@ -46,6 +48,7 @@ function App() {
 
   return (
     <div className="App">
+        {err && <p>{err}</p>}
         {token && <UserContext.Provider value={getUser()}>
             <header className="header">
                 <Profile />
@@ -53,7 +56,18 @@ function App() {
             </header>
             <Activities token={token} />
         </UserContext.Provider>}
-        {!token && <button onClick={() => window.location.href = getAuthLink()}>Войти</button>}
+        {!token && <section className="hello">
+            <p align="center">
+                Это приложение покажет<br />
+                статистику ваших активностей<br />
+                в новом виде 😎
+                <br />
+                <br />
+                Для продолжения нужно
+            <br />
+            <button  className="bigButton" onClick={() => window.location.href = getAuthLink()}>Войти в Strava</button>
+            </p>
+            </section>}
     </div>
   );
 }

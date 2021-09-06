@@ -1,0 +1,68 @@
+.chart {
+  outline: 1px salmon solid;
+  display: flex;
+}
+
+.daysName {
+  display: flex;
+  flex-direction: column;
+}
+.daysName div {
+  height: 1em;
+  margin: 1px;
+  line-height: 1em;
+  text-align: right;
+  outline: 1px solid #adadad;
+}
+
+.daysName div:first-child {
+  margin-top: calc(1em + 6px);
+}
+
+.main {
+  flex-grow: 4;
+overflow-x: auto;
+white-space: nowrap
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  height: 8em;
+  align-items: flex-start;
+  justify-content: start;
+}
+
+.empty_point {
+  width: 1em;
+  height: 1em;
+  margin: 1px;
+  overflow: hidden;
+  line-height: 1em;
+  background-color: #adadad;
+}
+
+.point {
+  width: 1em;
+  height: 1em;
+  background-color: #fc5200;
+  margin: 1px;
+  overflow: hidden;
+  line-height: 1em;
+}
+
+.month {
+  display: inline-block; overflow: hidden;
+  height: 1em;
+  line-height: 1em;
+text-align: center;
+  font-weight: bold;
+  font-weight: bold;
+  outline:1px solid #adadad}
+.m1 {width: calc(1em + (1 * 2px));}
+.m2 {width: calc(2em + (2 * 2px));}
+.m3 {width: calc(3em + (3 * 2px));}
+.m4 {width: calc(4em + (4 * 2px));}
+.m5 {width: calc(5em + (5 * 2px));}
+.m6 {width: calc(6em + (6 * 2px));}
