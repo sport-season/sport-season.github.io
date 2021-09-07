@@ -1,9 +1,21 @@
+.form {
+    display: flex;
+    padding: 10px;
+    flex-wrap: wrap;
+}
+
+.form select {
+    flex-grow: 2;
+}
 .form input, .form select {
     height: 24px;
     line-height: 24px;
     box-sizing: border-box;
+    margin: 4px;
 }
-
+.dates {
+    display: flex;
+}
 
 .floatButton {
     color:white;

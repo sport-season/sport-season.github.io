@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { act } from '@testing-library/react';
 import { formatDistance } from '../../../../helpers/formatHelper';
+import styles from './styles.module.css';
 
 const ActivityItem = ({ activity }) => {
 
@@ -10,17 +11,25 @@ const ActivityItem = ({ activity }) => {
     const d2 = new Date(t1 + (activity.elapsed_time * 1000));
     const at = new Date((activity.moving_time - activity.utc_offset ) * 1000);
 
-    return <div>
-        <a href={`https://www.strava.com/activities/${activity.id}`} target={'_blank'}>{activity.name}</a>
-        <strong>{formatDistance(activity.distance)}</strong>
-        {d1.toLocaleString().substr(0,17)}
+    return <a href={`https://www.strava.com/activities/${activity.id}`} target={'_blank'} className={styles.item}>
+        <div className={styles.row}>
+            <strong>{activity.name}</strong>
+            <strong>{formatDistance(activity.distance)}</strong>
+        </div>
+
+        <small>{d1.toLocaleString().substr(0,17)}
         -
         {d1.toLocaleDateString() !== d2.toLocaleDateString() && d2.toLocaleDateString()}
-        {d2.toLocaleTimeString().substr(0,5)}
-        (движ: {at.toLocaleTimeString().substr(0,5)})
+        {d2.toLocaleTimeString().substr(0,5)},
+            в движении: {at.toLocaleTimeString().substr(0,5)}</small>
         <br/>
-        {activity.elev_high}/{activity.elev_low} {activity.average_heartrate}/{activity.max_heartrate} {activity.average_speed}/{activity.speed}
-    </div>;
+        Высота макс: {activity.elev_high}, мин: {activity.elev_low};
+        {' '}
+        {activity.average_heartrate && <>Пульс: средн: {activity.average_heartrate}, макс: {activity.max_heartrate};</>}
+        {' '}
+        Средняя скорость {activity.average_speed};
+    </a>
+    ;
 };
 
 ActivityItem.propTypes = {

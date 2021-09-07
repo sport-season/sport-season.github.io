@@ -1,4 +1,8 @@
-export function formatDistance(d) {
-    if (!(d > 0)) { return '-'; }
-    return d > 1000 ? `${parseFloat(d / 1000).toFixed(2)}\u202fкм` : `${parseFloat(d).toFixed()}\u2009м`;
+export function formatDistance(d, destructure = false) {
+    if (!d) { return '-'; }
+    const parts = d > 1000
+        ? [parseFloat(d / 1000).toFixed(2), 'км']
+        : [parseFloat(d).toFixed(2), 'м'];
+
+    return destructure ? parts : parts.join('\u202f');
 }

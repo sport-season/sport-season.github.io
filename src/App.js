@@ -23,6 +23,8 @@ function App() {
             const getUserData = async () => {
                 try {
                     await setAuthTokenByCodeAsync(code);
+                    window.history.pushState({},'', '/');
+                    window.location.reload();
                     //window.location.href = window.location.href.replace(window.location.search, '');
                 } catch (e) {
                     setErr(e.message)

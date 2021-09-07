@@ -11,6 +11,9 @@ import Card from './components/Card';
 import styles from './styles.module.css'
 import { UserContext } from '../../contexts/userContext';
 import Chart from "../Chart";
+import {debounceAsync} from "../../helpers/debounceHelper";
+import Widget from "./components/Widget";
+import Modal from "../Modal";
 const now = new Date();
 const defaultD1 = new Date(now.getFullYear(), 0, 1, 4, 0, 0, 1);
 const defaultD2 = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
@@ -20,7 +23,7 @@ const Activities = ({ token }) => {
     const [d2, setD2] = useState(localStorage.getItem('stravastatD2') || defaultD2.toISOString().substr(0,10));
     const [types, setTypes] = useState([]);
     const [loading, setIsLoading] = useState(false);
-    const [type, setType] = useState(localStorage.getItem('stravastatType'));
+    const [type, setType] = useState(localStorage.getItem('stravastatType') || "");
     const [activities, setActivities] = useState(null);
     const mapRef = useRef();
     const mapContainerRef = useRef();
@@ -35,8 +38,8 @@ const Activities = ({ token }) => {
         });
     }, []);
 
-    useEffect(() => localStorage.setItem('stravastatD1', d1), [d1]);
-    useEffect(() => localStorage.setItem('stravastatD2', d2), [d2]);
+    useEffect(async () => localStorage.setItem('stravastatD1', d1), [d1]);
+    useEffect(async () => localStorage.setItem('stravastatD2', d2), [d2]);
     useEffect(() => localStorage.setItem('stravastatType', type), [type])
 
     useEffect(() => {
@@ -106,8 +109,9 @@ const Activities = ({ token }) => {
         };
     }, { distance: 0, elev_high: 0, elev_low: 0, elapsed_time: 0, moving_time: 0 })
 
-    let handleChangeD1 = (e) => setD1(e.target.value);
-    let handleChangeD2 = (e) => setD2(e.target.value);
+    let debounceTimer;
+    const handleChangeD1 = async (e) => { const value = e.target.value; await debounceAsync(); setD1(value); }
+    const handleChangeD2 = async (e) => { const value = e.target.value; await debounceAsync(); setD2(value); }
     const limit = 50;
 
     async function handleUpdate() {
@@ -140,16 +144,14 @@ const Activities = ({ token }) => {
 
     return <div>
         <button className={styles.floatButton} disabled={loading} onClick={handleUpdate}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                 className="bi bi-arrow-repeat" viewBox="0 0 16 16">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                 <path
                     d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
-                <path fill-rule="evenodd"
-                      d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+                <path d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
             </svg>
         </button>
         <div className={styles.form}>
-            <input
+            <div className={styles.dates}><input
                 type="date"
                 value={d1}
                 min={user.created_at.substr(0,10)}
@@ -164,6 +166,7 @@ const Activities = ({ token }) => {
                 max={new Date().toISOString().substr(0,10)}
                 onChange={handleChangeD2}
             />
+            </div>
             {' \u00a0 '}
             <select onChange={e => setType(e.target.value)} value={type}>
                 <option value="">Все виды активностей</option>
@@ -172,19 +175,20 @@ const Activities = ({ token }) => {
                 ))}
             </select>
         </div>
-        {aggreg && <section style={{display:'flex', 'margin':'10px auto'}}>
-            <Card title={'Дистанция'}>{formatDistance(aggreg.distance)}</Card>
-            <Card title={'Набор'}>{formatDistance(aggreg.elev_high)}</Card>
-            <Card title={'Сброс'}>{formatDistance(aggreg.elev_low)}</Card>
-            <Card title={'В движении'}>{(aggreg.moving_time / 60 / 60).toFixed(2)} ч</Card>
-        </section>
+        {
+            aggreg && <Widget
+                distance={aggreg.distance}
+                elev_high={aggreg.elev_high}
+                elev_low={aggreg.elev_low}
+                moving_time={aggreg.moving_time}
+            />
         }
         {filtredActivities?.length > 0 && <Chart activities={filtredActivities} />}
         {!activities && 'loading...'}
         {filtredActivities && <div ref={mapContainerRef} style={{height:'300px'}}/>}
-        <ul>
+        <section>
             {filtredActivities && filtredActivities.map(x => <ActivityItem key={x.id} activity={x} /> )}
-        </ul>
+        </section>
     </div>;
 };
 
