@@ -18,6 +18,7 @@ const Chart = ({activities}) => {
 
     useEffect(async () => localStorage.setItem('stravastatZoom', size), [size]);
 
+
     if(!activities[0]) {
         return '🐱‍🚀';
     }
@@ -51,6 +52,12 @@ const Chart = ({activities}) => {
     w = 0;
 
     const filledActivities = agg.filter(x => x.dist > 0);
+
+    if (!filledActivities?.length) {
+        return null;
+    }
+
+
     const min = filledActivities.reduce((prev, curr) => prev.dist < curr.dist ? prev.dist : curr.dist);
     const max = filledActivities.reduce((prev, curr) => prev.dist > curr.dist ? prev.dist : curr.dist);
 

@@ -92,8 +92,7 @@ export async function unAuthorizeAsync(){
             `https://www.strava.com/oauth/deauthorize?${new URLSearchParams({ access_token }).toString()}`,
             { method: "POST" }
             ).then(res => res.json());
-        localStorage.removeItem(lsTokenKey);
-        localStorage.removeItem(lsUserKey);
+        localStorage.clear();
 
         return Promise.resolve({ success: true });
     } catch (error) {

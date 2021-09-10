@@ -23,12 +23,7 @@ button:hover {
     border-color: #bf3e00;
 }
 
-.hello {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
+
 
 .bigButton {
     font-size: 1.2em;

@@ -1,6 +1,7 @@
 .card {
     text-align: center;
     margin-right: 10px;
+    margin-bottom: 10px;
     padding: 10px;
     border: 1px solid #fc5200;
     border-radius: 4px;
@@ -18,4 +19,19 @@
 
 .cardContent small {
     font-size: 0.6em;
+}
+
+@media only screen and (max-width: 600px) {
+    .card {
+        flex-grow: 1;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        padding: 5px;
+    }
+
+    .cardContent {
+        font-size: 1em;
+        font-weight: bold;
+        color: #fc5200;
+    }
 }

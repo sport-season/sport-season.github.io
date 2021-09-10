@@ -31,6 +31,12 @@ class LocalDb {
         let store = tx.objectStore('activities');
         return store.getAll();
     }
+    clear() {
+        let tx = this.db.transaction('activities', 'readwrite');
+        let store = tx.objectStore('activities');
+        return store.clear();
+    }
+
 }
 
 const dbName = 'stravastat';

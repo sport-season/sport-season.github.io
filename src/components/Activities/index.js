@@ -5,15 +5,18 @@ import polyline from '@mapbox/polyline';
 import localDB from '../../services/indexedDBService';
 import { getActivitiesAsync } from '../../services/activitiesService';
 import ActivityItem from './components/ActivityItem';
-import { formatDistance } from '../../helpers/formatHelper';
 import { clearMap } from '../../helpers/mapHelper';
-import Card from './components/Card';
 import styles from './styles.module.css'
 import { UserContext } from '../../contexts/userContext';
 import Chart from "../Chart";
 import {debounceAsync} from "../../helpers/debounceHelper";
 import Widget from "./components/Widget";
-import Modal from "../Modal";
+import Loader from '../Loader';
+import 'leaflet/dist/leaflet.css';
+import '../../libs/leaflet-fullscreen/Leaflet.fullscreen';
+import '../../libs/leaflet-fullscreen/leaflet.fullscreen.css';
+import logo from '../../images/long-512_orange.png'
+
 const now = new Date();
 const defaultD1 = new Date(now.getFullYear(), 0, 1, 4, 0, 0, 1);
 const defaultD2 = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
@@ -33,7 +36,7 @@ const Activities = ({ token }) => {
         localDB.getAllActivity().then(res => {
             setActivities(res);
             if (!res.length) {
-                handleUpdate();
+                handleUpdate(true);
             }
         });
     }, []);
@@ -54,14 +57,40 @@ const Activities = ({ token }) => {
         if (!mapRef?.current) {
             mapRef.current = L.map(
                 mapContainerRef.current,
-                { fullscreenControl: true }
+                {
+                    fullscreenControl: {
+                        pseudoFullscreen: false // if true, fullscreen to page width and height
+                    }
+                }
             ).setView([53.2006600, 45.0046400], 12);
 
             L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+                attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors | <b><a href="https://stravastat.github.io">stravastat.github.io</a></b>',
                 maxZoom: 20,
                 id: 'osm'
             }).addTo(mapRef.current);
+
+            L.Control.Watermark = L.Control.extend({
+                onAdd: function(map) {
+                    var img = L.DomUtil.create('img');
+
+                    img.src = logo;
+                    img.style.height = '24px';
+                    img.style.opacity = '0.64';
+
+                    return img;
+                },
+
+                onRemove: function(map) {
+                    // Nothing to do here
+                }
+            });
+
+            L.control.watermark = function(opts) {
+                return new L.Control.Watermark(opts);
+            }
+
+            L.control.watermark({ position: 'bottomleft' }).addTo(mapRef.current);
         }
 
 
@@ -92,6 +121,7 @@ const Activities = ({ token }) => {
     }, [mapContainerRef.current, activities, type, d1, d2]);
 
 
+
     const filtredActivities = activities && activities.filter(x => {
         const dX = Date.parse(x.start_date_local);
         const dS = Date.parse(d1);
@@ -99,6 +129,8 @@ const Activities = ({ token }) => {
 
         return (!type || x.type === type) && dX >= dS && dX <= dE;
     })
+
+
     const aggreg = filtredActivities?.reduce((acc, val) => {
         return {
             distance: acc.distance + val.distance,
@@ -109,12 +141,11 @@ const Activities = ({ token }) => {
         };
     }, { distance: 0, elev_high: 0, elev_low: 0, elapsed_time: 0, moving_time: 0 })
 
-    let debounceTimer;
     const handleChangeD1 = async (e) => { const value = e.target.value; await debounceAsync(); setD1(value); }
     const handleChangeD2 = async (e) => { const value = e.target.value; await debounceAsync(); setD2(value); }
     const limit = 50;
 
-    async function handleUpdate() {
+    async function handleUpdate(isInitial = false) {
         setIsLoading(true);
         let lastBatch = activities;
         let lastActivityDate = lastBatch?.length
@@ -139,8 +170,18 @@ const Activities = ({ token }) => {
             console.timeEnd('addDB');
         }
 
+        if (isInitial) {
+            window.location.reload();
+        }
         setIsLoading(false)
     };
+
+    if (loading && !activities?.length) { //
+        return <div className={styles.loader}>
+            <Loader />
+            <p align="center">Загрузка<br />активностей</p>
+        </div>
+    }
 
     return <div>
         <button className={styles.floatButton} disabled={loading} onClick={handleUpdate}>
@@ -184,7 +225,7 @@ const Activities = ({ token }) => {
             />
         }
         {filtredActivities?.length > 0 && <Chart activities={filtredActivities} />}
-        {!activities && 'loading...'}
+        {!activities && <div className={styles.loader}><Loader /></div>}
         {filtredActivities && <div ref={mapContainerRef} style={{height:'300px'}}/>}
         <section>
             {filtredActivities && filtredActivities.map(x => <ActivityItem key={x.id} activity={x} /> )}
