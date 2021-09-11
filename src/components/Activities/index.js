@@ -16,6 +16,7 @@ import 'leaflet/dist/leaflet.css';
 import '../../libs/leaflet-fullscreen/Leaflet.fullscreen';
 import '../../libs/leaflet-fullscreen/leaflet.fullscreen.css';
 import logo from '../../images/long-512_orange.png'
+import { formatDistance } from '../../helpers/formatHelper';
 
 const now = new Date();
 const defaultD1 = new Date(now.getFullYear(), 0, 1, 4, 0, 0, 1);
@@ -65,14 +66,14 @@ const Activities = ({ token }) => {
             ).setView([53.2006600, 45.0046400], 12);
 
             L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors | <b><a href="https://stravastat.github.io">stravastat.github.io</a></b>',
+                attribution: ' | <a href="http://openstreetmap.org">OpenStreetMap</a> | <b><a href="https://stravastat.github.io">stravastat.github.io</a></b>',
                 maxZoom: 20,
                 id: 'osm'
             }).addTo(mapRef.current);
 
             L.Control.Watermark = L.Control.extend({
                 onAdd: function(map) {
-                    var img = L.DomUtil.create('img');
+                    const img = L.DomUtil.create('img');
 
                     img.src = logo;
                     img.style.height = '24px';
@@ -105,12 +106,19 @@ const Activities = ({ token }) => {
 
             return (!type || x.type === type) && dX >= dS && dX <= dE;
         });
-        filtredActivities?.forEach(({ map: {summary_polyline} }) => {
+        filtredActivities?.forEach(({ map: {summary_polyline}, name, distance, ...activity }) => {
             if (summary_polyline?.length) {
                 const coords = polyline.decode(summary_polyline);
-                L.polyline(coords).setStyle({
-                    color: 'rgba(255, 0, 0,0.5)'
-                }).addTo(mapRef.current)
+                L.polyline(coords)
+                    .setStyle({
+                        color: 'rgba(255, 0, 0,0.5)'
+                    })
+                    .bindPopup(`
+                    ${new Date(Date.parse(activity.start_date_local) - (activity.utc_offset * 1000)).toLocaleString()}
+                    ${name} (${formatDistance(distance)})
+                    <a href="${`https://www.strava.com/activities/${activity.id}`}" target="_blank">Открыть в Strava</a>
+                    `)
+                    .addTo(mapRef.current)
                 boundCoordinates.push(coords)
             }
         })

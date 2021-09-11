@@ -1,6 +1,5 @@
 import styles from './styles.module.css';
 import React, {useEffect, useState} from "react";
-import {formatDistance} from "../../helpers/formatHelper";
 import {debounceAsync} from "../../helpers/debounceHelper";
 import {showModal} from "../Modal";
 import ActivityItem from "../Activities/components/ActivityItem";
@@ -12,8 +11,10 @@ const showDay = (x) => {
         </div>})
 }
 
+const defaultZoom = 16;
+
 const Chart = ({activities}) => {
-    const [size, setSize] = useState(+localStorage.getItem('stravastatZoom') || 14);
+    const [size, setSize] = useState(+localStorage.getItem('stravastatZoom') || defaultZoom);
 
 
     useEffect(async () => localStorage.setItem('stravastatZoom', size), [size]);
@@ -24,7 +25,7 @@ const Chart = ({activities}) => {
     }
 
     const minD = new Date(Date.parse(activities[0].start_date));
-    const maxD = new Date(Date.parse(activities[activities.length - 1].start_date));
+    const maxD = new Date(Date.parse(activities[activities.length - 1].start_date)+86400000);
     const shif = minD.getDay() === 0 ? 6 : minD.getDay()-1
 
     const agg = [];
@@ -57,12 +58,10 @@ const Chart = ({activities}) => {
         return null;
     }
 
-
-    const min = filledActivities.reduce((prev, curr) => prev.dist < curr.dist ? prev.dist : curr.dist);
     const max = filledActivities.reduce((prev, curr) => prev.dist > curr.dist ? prev.dist : curr.dist);
 
     const handleZoom = coeff => async () => {
-        await debounceAsync(300);
+        await debounceAsync(100);
         setSize(cur => cur + coeff)
     }
 
@@ -71,6 +70,16 @@ const Chart = ({activities}) => {
         <header className={styles.chartSectionHeader}>
             <h3>Карта активности</h3>
             <div>
+                {size > defaultZoom && <button onClick={handleZoom(-2)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         className="bi bi-zoom-out" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
+                        <path
+                            d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z"/>
+                        <path fill-rule="evenodd" d="M3 6.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+                    </svg>
+                </button>}
                 <button onClick={handleZoom(2)}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          className="bi bi-zoom-in" viewBox="0 0 16 16">
@@ -80,16 +89,6 @@ const Chart = ({activities}) => {
                             d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z"/>
                         <path fill-rule="evenodd"
                               d="M6.5 3a.5.5 0 0 1 .5.5V6h2.5a.5.5 0 0 1 0 1H7v2.5a.5.5 0 0 1-1 0V7H3.5a.5.5 0 0 1 0-1H6V3.5a.5.5 0 0 1 .5-.5z"/>
-                    </svg>
-                </button>
-                <button onClick={handleZoom(-2)}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                         className="bi bi-zoom-out" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                              d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
-                        <path
-                            d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z"/>
-                        <path fill-rule="evenodd" d="M3 6.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
                     </svg>
                 </button>
             </div>
