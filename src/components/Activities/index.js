@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from 'react';
+import React, { useEffect, useState, useRef, useContext, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import * as L from 'leaflet';
 import polyline from '@mapbox/polyline';
@@ -40,10 +40,10 @@ const Activities = ({ token }) => {
                 handleUpdate(true);
             }
         });
-    }, []);
+    }, [handleUpdate]);
 
-    useEffect(async () => localStorage.setItem('stravastatD1', d1), [d1]);
-    useEffect(async () => localStorage.setItem('stravastatD2', d2), [d2]);
+    useEffect(() => localStorage.setItem('stravastatD1', d1), [d1]);
+    useEffect(() => localStorage.setItem('stravastatD2', d2), [d2]);
     useEffect(() => localStorage.setItem('stravastatType', type), [type])
 
     useEffect(() => {
@@ -116,7 +116,7 @@ const Activities = ({ token }) => {
                     .bindPopup(`
                     ${new Date(Date.parse(activity.start_date_local) - (activity.utc_offset * 1000)).toLocaleString()}
                     ${name} (${formatDistance(distance)})
-                    <a href="${`https://www.strava.com/activities/${activity.id}`}" target="_blank">Открыть в Strava</a>
+                    <a href="${`https://www.strava.com/activities/${activity.id}`}" rel="noreferrer" target="_blank">Открыть в Strava</a>
                     `)
                     .addTo(mapRef.current)
                 boundCoordinates.push(coords)
@@ -126,7 +126,7 @@ const Activities = ({ token }) => {
         const bounds = L.latLngBounds(boundCoordinates);
         boundCoordinates?.length && mapRef.current.fitBounds(bounds);// works!
 
-    }, [mapContainerRef.current, activities, type, d1, d2]);
+    }, [mapContainerRef, activities, type, d1, d2]);
 
 
 
@@ -153,7 +153,7 @@ const Activities = ({ token }) => {
     const handleChangeD2 = async (e) => { const value = e.target.value; await debounceAsync(); setD2(value); }
     const limit = 50;
 
-    async function handleUpdate(isInitial = false) {
+    var handleUpdate = useCallback(async function (isInitial = false) {
         setIsLoading(true);
         let lastBatch = activities;
         let lastActivityDate = lastBatch?.length
@@ -182,7 +182,7 @@ const Activities = ({ token }) => {
             window.location.reload();
         }
         setIsLoading(false)
-    };
+    }, [activities, token]);
 
     if (loading && !activities?.length) { //
         return <div className={styles.loader}>

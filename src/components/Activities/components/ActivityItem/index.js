@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { act } from '@testing-library/react';
 import { formatDistance } from '../../../../helpers/formatHelper';
 import styles from './styles.module.css';
 
@@ -11,7 +10,7 @@ const ActivityItem = ({ activity }) => {
     const d2 = new Date(t1 + (activity.elapsed_time * 1000));
     const at = new Date((activity.moving_time - activity.utc_offset ) * 1000);
 
-    return <a href={`https://www.strava.com/activities/${activity.id}`} target={'_blank'} className={styles.item}>
+    return <a href={`https://www.strava.com/activities/${activity.id}`} rel="noreferrer" target={'_blank'} className={styles.item}>
         <div className={styles.row}>
             <strong>{activity.name}</strong>
             <strong>{formatDistance(activity.distance)}</strong>

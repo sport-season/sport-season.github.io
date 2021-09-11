@@ -15,10 +15,15 @@ import FullScreen from './components/FullScreen';
 import Loader from './components/Loader';
 import localDB from './services/indexedDBService';
 
+const dbName = 'stravastat';
+const dbVersion = 1;
+
+
 
 function App() {
     const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [dbLoading, setDbLoading] = useState(true);
     const [err, setErr] = useState(null);
 
     useEffect(() => {
@@ -61,7 +66,15 @@ function App() {
 
     }, []);
 
-    if (loading) {
+    useEffect(() => {
+        setDbLoading(true);
+        localDB.init(dbName, dbVersion)
+            .then(() => {})
+            .catch(() => setErr('Ошибка инициализации БД'))
+            .finally(() => setDbLoading(false))
+    }, [])
+
+    if (loading || dbLoading) {
         return <FullScreen><Loader /></FullScreen>;
     }
 

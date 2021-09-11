@@ -59,7 +59,7 @@ white-space: nowrap
   flex-wrap: wrap;
   height: 8em;
   align-items: flex-start;
-  justify-content: start;
+  justify-content: flex-start;
   width: fit-content;
   z-index: 3;
 }

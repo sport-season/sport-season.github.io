@@ -1,6 +1,7 @@
 {
   "short_name": "Stravastat",
   "name": "Stravastat",
+  "gcm_sender_id": "54156851656",
   "icons": [
     {
       "src": "favicon.ico",

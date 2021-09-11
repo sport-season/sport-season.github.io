@@ -2,7 +2,7 @@ import { openDB } from 'idb/with-async-ittr.js';
 
 class LocalDb {
     constructor(name, version) {
-        this.init(name, version)
+        this.isReady = false;
     }
 
     async init(name, version) {
@@ -12,6 +12,7 @@ class LocalDb {
                     .createIndex('start_date', 'start_date');
             },
         });
+        this.isReady = true;
     }
 
     addActivities(oneOrSeveralObjs) {
@@ -39,9 +40,5 @@ class LocalDb {
 
 }
 
-const dbName = 'stravastat';
-const dbVersion = 1;
-
-
-const instance = new LocalDb(dbName, dbVersion);
+const instance = new LocalDb();
 export default instance;

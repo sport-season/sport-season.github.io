@@ -45,3 +45,23 @@ function hndlEventFetch(evt) {
 
 self.addEventListener('install', hndlEventInstall);
 self.addEventListener('fetch', hndlEventFetch);
+self.addEventListener('push', function(e) {
+    var options = {
+        body: 'This notification was generated from a push!',
+        icon: 'stravastat.png',
+        vibrate: [100, 50, 100],
+        data: {
+            dateOfArrival: Date.now(),
+            primaryKey: '2'
+        },
+        actions: [
+            {action: 'explore', title: 'Explore this new world',
+                icon: 'stravastat.png'},
+            {action: 'close', title: 'Close',
+                icon: 'stravastat.png'},
+        ]
+    };
+    e.waitUntil(
+        self.registration.showNotification('Hello world!', options)
+    );
+});
