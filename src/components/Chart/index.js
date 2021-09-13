@@ -11,6 +11,11 @@ const showDay = (x) => {
         </div>})
 }
 
+const getMonthName = date => {
+    const months = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+    return `${months[date.getMonth()].toUpperCase()}'${date.getFullYear().toString().substr(-2)}`;
+}
+
 const defaultZoom = 16;
 
 const Chart = ({activities}) => {
@@ -42,14 +47,14 @@ const Chart = ({activities}) => {
         }
 
         if (new Date(cur).getMonth() !== new Date(cur+86_400_000).getMonth()) {
-            mo.push({ m: new Date(cur).toISOString().substr(0,7), w })
+            mo.push({ m: getMonthName(new Date(cur)), w })
             w = 0;
         }
         agg.push({ date: cur, cou: actual.length, acts: actual, dist: actual.reduce((s,x)=>x.distance + s,0) });
 
         cur += 86_400_000;
     }
-    mo.push({ m: new Date(cur).toISOString().substr(0,7),w})
+    mo.push({ m: getMonthName(new Date(cur)),w})
     w = 0;
 
     const filledActivities = agg.filter(x => x.dist > 0);
@@ -124,58 +129,8 @@ const Chart = ({activities}) => {
                 })}
             </div>
         </div>
-    </div></section>
+    </div>
+    </section>
 }
-
-/*
-* achievement_count: 0
-athlete: {id: 12602406, resource_state: 1}
-athlete_count: 8
-average_speed: 1.164
-comment_count: 0
-commute: false
-display_hide_heartrate_option: false
-distance: 13919.9
-elapsed_time: 22384
-elev_high: 344
-elev_low: 232.4
-end_latlng: (2) [53.03, 46.98]
-external_id: "???? 3.gpx"
-flagged: false
-from_accepted_tag: false
-gear_id: "g3242449"
-has_heartrate: false
-has_kudoed: false
-heartrate_opt_out: false
-id: 1948748704
-kudos_count: 4
-location_city: null
-location_country: "Russia"
-location_state: null
-manual: false
-map: {id: "a1948748704", summary_polyline: "apibI}y_}GlATS{Ai@fIiB}Du@|@qAqNiIuEsBuDkFaAcBqDoD…qDU}JnBypAaC_I`Cw`@qJDNyEcC}@gE|BkAuLnCa@}MgAoEsM", resource_state: 2}
-max_speed: 2.1
-moving_time: 11963
-name: "Ноябрррьский поход 2018. День 3"
-photo_count: 0
-pr_count: 0
-private: false
-resource_state: 2
-start_date: "2018-11-04T06:58:34Z"
-start_date_local: "2018-11-04T09:58:34Z"
-start_latitude: 52.97
-start_latlng: (2) [52.97, 46.86]
-start_longitude: 46.98
-timezone: "(GMT+03:00) Europe/Moscow"
-total_elevation_gain: 201.4
-total_photo_count: 4
-trainer: false
-type: "Hike"
-upload_id: 2084826025
-upload_id_str: "2084826025"
-utc_offset: 10800
-visibility: "everyone"
-
-* */
 
 export default Chart;
