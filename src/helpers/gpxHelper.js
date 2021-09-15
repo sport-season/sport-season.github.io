@@ -22,7 +22,7 @@ export const getGPXFileAsync = (latlon, name = 'stravastat') => {
     return fetch(getLatLonAsGpx(latlon, name))
         .then(res => res.blob())
         .then(blob => {
-            const file = new File([blob], name,{ type: "plain/text" })
+            const file = new File([blob], name+'.txt',{ type: "text/plain" })
             return file
         })
 }
