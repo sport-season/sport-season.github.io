@@ -5,6 +5,7 @@ import logo from '../../images/long-512_orange.png';
 
 const Menu = ({ onClose }) => {
     const handleLogout = async (e) => {
+        if (!window.confirm('Приложение будет разлогинено, сохраненные данные будут удалены. \r\nПродолжить?')) {return;}
         e.target.disabled = true;
         await unAuthorizeAsync();
         await localDB.clear();
@@ -59,7 +60,7 @@ const Menu = ({ onClose }) => {
 
         </section>
         <footer className={styles.footer}>
-            <button onClick={handleLogout} style={{backgroundColor:'#adadad', borderColor:'#777777'}}>Выйти и разлогинить сервис в strava</button>
+            <button onClick={handleLogout} style={{backgroundColor:'#adadad', borderColor:'#777777'}}>Выйти</button>
             2021 <p>© Created by <a href="https://www.strava.com/athletes/12602406" target="_blank">Fedoseev Nikolay</a></p>
         </footer>
     </div>
