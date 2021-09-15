@@ -4,7 +4,6 @@ import {
     getAuthLink,
     getAuthTokenAsync,
     setAuthTokenByCodeAsync,
-    unAuthorizeAsync,
     getUser
 } from './services/authService';
 import Profile from './components/Profile';
@@ -14,6 +13,8 @@ import Welcome from './components/Welcome';
 import FullScreen from './components/FullScreen';
 import Loader from './components/Loader';
 import localDB from './services/indexedDBService';
+import { showModal } from './components/Modal';
+import Menu from './components/Menu';
 
 const dbName = 'stravastat';
 const dbVersion = 1;
@@ -78,11 +79,10 @@ function App() {
         return <FullScreen><Loader /></FullScreen>;
     }
 
-    const handleLogout = async (e) => {
-        e.target.disabled = true;
-        await unAuthorizeAsync();
-        await localDB.clear();
-        window.location.reload();
+
+
+    const handleMenu = () => {
+        showModal({children: onClose => <Menu onClose={onClose} />})
     }
 
   return (
@@ -91,7 +91,7 @@ function App() {
         {token && <UserContext.Provider value={getUser()}>
             <header className="header">
                 <Profile />
-                <button onClick={handleLogout}>Выйти</button>
+                <button onClick={handleMenu}>☰</button>
             </header>
             <Activities token={token} />
         </UserContext.Provider>}

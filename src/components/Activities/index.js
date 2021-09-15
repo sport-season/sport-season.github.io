@@ -17,6 +17,7 @@ import '../../libs/leaflet-fullscreen/Leaflet.fullscreen';
 import '../../libs/leaflet-fullscreen/leaflet.fullscreen.css';
 import logo from '../../images/long-512_orange.png'
 import { formatDistance } from '../../helpers/formatHelper';
+import { getPopupContentForActivity } from './helpers';
 
 const now = new Date();
 const defaultD1 = new Date(now.getFullYear(), 0, 1, 4, 0, 0, 1);
@@ -106,18 +107,15 @@ const Activities = ({ token }) => {
 
             return (!type || x.type === type) && dX >= dS && dX <= dE;
         });
-        filtredActivities?.forEach(({ map: {summary_polyline}, name, distance, ...activity }) => {
+        filtredActivities?.forEach(activity => {
+            const { map: {summary_polyline} } = activity;
             if (summary_polyline?.length) {
                 const coords = polyline.decode(summary_polyline);
                 L.polyline(coords)
                     .setStyle({
                         color: 'rgba(255, 0, 0,0.5)'
                     })
-                    .bindPopup(`
-                    ${new Date(Date.parse(activity.start_date_local) - (activity.utc_offset * 1000)).toLocaleString()}
-                    ${name} (${formatDistance(distance)})
-                    <a href="${`https://www.strava.com/activities/${activity.id}`}" rel="noreferrer" target="_blank">Открыть в Strava</a>
-                    `)
+                    .bindPopup(getPopupContentForActivity(activity))
                     .addTo(mapRef.current)
                 boundCoordinates.push(coords)
             }

@@ -9,7 +9,7 @@ const Modal = ({ children, onClose }) => {
 
     return <div className={styles.overlay} onClick={onClose}>
         <div className={styles.modal} onClick={e => e.stopPropagation()}>
-            {children}
+            {typeof children === 'function' ? children(onClose) : children}
         </div>
     </div>
 }
@@ -18,7 +18,10 @@ export const showModal = props => {
     const container = document.createElement('div');
     document.body.appendChild(container);
 
-    ReactDOM.render(<Modal {...props} onClose={() => document.body.removeChild(container)} />, container)
+    ReactDOM.render(<Modal {...props} onClose={() => {
+        ReactDOM.unmountComponentAtNode(container);
+        document.body.removeChild(container)
+    }} />, container)
 }
 
 export default Modal;
