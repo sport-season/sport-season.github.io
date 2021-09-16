@@ -1,7 +1,8 @@
 import { unAuthorizeAsync } from '../../services/authService';
 import localDB from '../../services/indexedDBService';
 import styles from './styles.module.css';
-import logo from '../../images/long-512_orange.png';
+import { showModal } from '../Modal';
+import Donate from '../Donate';
 
 const Menu = ({ onClose }) => {
     const handleLogout = async (e) => {
@@ -24,6 +25,10 @@ const Menu = ({ onClose }) => {
             .catch(function () {
                 console.log("Sharing failed")
             })
+    }
+
+    const handleDonate = () => {
+        showModal({children: onClose => <Donate onClose={onClose} />})
     }
 
     return <div className={styles.menu}>
@@ -56,7 +61,9 @@ const Menu = ({ onClose }) => {
                 <a href="https://www.openstreetmap.org/" target="_blank">openstreetmap</a>
             </p>
             </div>
-            {window.navigator.share && <button onClick={handleShare}>Поделиться</button>}
+            <div>
+                <button onClick={handleDonate}>Поддержать ☕</button>
+            </div>
 
         </section>
         <footer className={styles.footer}>
