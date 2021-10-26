@@ -16,8 +16,8 @@ import 'leaflet/dist/leaflet.css';
 import '../../libs/leaflet-fullscreen/Leaflet.fullscreen';
 import '../../libs/leaflet-fullscreen/leaflet.fullscreen.css';
 import logo from '../../images/long-512_orange.png'
-import { formatDistance } from '../../helpers/formatHelper';
 import { getPopupContentForActivity } from './helpers';
+import {saveJSONAsFile, saveArrayAsCSV} from "../../helpers/downloadHelper";
 
 const now = new Date();
 const defaultD1 = new Date(now.getFullYear(), 0, 1, 4, 0, 0, 1);
@@ -233,6 +233,13 @@ const Activities = ({ token }) => {
         {filtredActivities?.length > 0 && <Chart activities={filtredActivities} />}
         {!activities && <div className={styles.loader}><Loader /></div>}
         {filtredActivities && <div ref={mapContainerRef} style={{height:'300px'}}/>}
+        &nbsp;
+        <button onClick={() => saveJSONAsFile('stravastat_data.json', activities)}>Экспорт JSON</button>
+        &nbsp;
+        <button onClick={() => saveArrayAsCSV(
+            'stravastat_data.csv',
+            activities.map(({name, start_date_local})=>([name.trim(), start_date_local]))
+        )}>Экспорт CSV</button>
         <section>
             {filtredActivities && filtredActivities.map(x => <ActivityItem key={x.id} activity={x} /> )}
         </section>
