@@ -22,6 +22,7 @@ import {saveJSONAsFile, saveArrayAsCSV} from "../../helpers/downloadHelper";
 const now = new Date();
 const defaultD1 = new Date(now.getFullYear(), 0, 1, 4, 0, 0, 1);
 const defaultD2 = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+const minDate = '2007-01-01'
 
 const Activities = ({ token }) => {
     const [d1, setD1] = useState(localStorage.getItem('stravastatD1') || defaultD1.toISOString().substr(0,10));
@@ -156,7 +157,7 @@ const Activities = ({ token }) => {
         let lastBatch = activities;
         let lastActivityDate = lastBatch?.length
             ? new Date(Date.parse(lastBatch[lastBatch.length - 1].start_date))
-            : new Date(Date.parse(user.created_at));
+            : new Date(Date.parse(minDate));
 
         let page = 0;
         while (page === 0 || lastBatch?.length > 0) {
@@ -201,7 +202,7 @@ const Activities = ({ token }) => {
             <div className={styles.dates}><input
                 type="date"
                 value={d1}
-                min={user.created_at.substr(0,10)}
+                min={minDate}
                 max={d2.substr(0,10)}
                 onChange={handleChangeD1}
             />
