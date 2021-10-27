@@ -37,6 +37,7 @@ const Activities = ({ token }) => {
 
     useEffect(() => {
         localDB.getAllActivity().then(res => {
+            console.log('activities', { res });
             setActivities(res);
             if (!res.length) {
                 handleUpdate(true);
