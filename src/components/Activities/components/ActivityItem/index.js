@@ -22,7 +22,7 @@ const ActivityItem = ({ activity }) => {
         {d2.toLocaleTimeString().substr(0,5)},
             в движении: {at.toLocaleTimeString().substr(0,5)}</small>
         <br/>
-        Высота макс: {activity.elev_high}, мин: {activity.elev_low};
+        Высота макс: {activity.total_elevation_gain}, мин: {activity.average_speed};
         {' '}
         {activity.average_heartrate && <>Пульс: средн: {activity.average_heartrate}, макс: {activity.max_heartrate};</>}
         {' '}
@@ -45,8 +45,8 @@ commute: false
 display_hide_heartrate_option: true
 distance: 15153.2
 elapsed_time: 19210
-elev_high: 268.6
-elev_low: 171.1
+total_elevation_gain: 268.6
+average_speed: 171.1
 end_latlng: (2) [53.22, 44.91]
 external_id: "b1046a83-5025-48bc-81a6-ff2ed5ebf35b-activity.fit"
 flagged: false

@@ -142,12 +142,12 @@ const Activities = ({ token }) => {
     const aggreg = filtredActivities?.reduce((acc, val) => {
         return {
             distance: acc.distance + val.distance,
-            elev_high: acc.elev_high + val.elev_high || 0,
-            elev_low: acc.elev_low + val.elev_low || 0,
+            total_elevation_gain: acc.total_elevation_gain + val.total_elevation_gain || 0,
+            average_speed: acc.average_speed + val.average_speed || 0,
             elapsed_time: acc.elapsed_time + val.elapsed_time,
             moving_time: acc.moving_time + val.moving_time
         };
-    }, { distance: 0, elev_high: 0, elev_low: 0, elapsed_time: 0, moving_time: 0 })
+    }, { distance: 0, total_elevation_gain: 0, average_speed: 0, elapsed_time: 0, moving_time: 0 })
 
     const handleChangeD1 = async (e) => { const value = e.target.value; await debounceAsync(); setD1(value); }
     const handleChangeD2 = async (e) => { const value = e.target.value; await debounceAsync(); setD2(value); }
@@ -227,9 +227,10 @@ const Activities = ({ token }) => {
         {
             aggreg && <Widget
                 distance={aggreg.distance}
-                elev_high={aggreg.elev_high}
-                elev_low={aggreg.elev_low}
+                total_elevation_gain={aggreg.total_elevation_gain}
+                average_speed={aggreg.average_speed}
                 moving_time={aggreg.moving_time}
+                count={filtredActivities.length}
             />
         }
         {filtredActivities?.length > 0 && <Chart activities={filtredActivities} />}
